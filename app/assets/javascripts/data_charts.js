@@ -29,6 +29,28 @@ $(document).ready(function() {
 		//CHART 1
 		$('#container1').highcharts('StockChart', {
 
+			tooltip: {
+                
+                useHTML: true,
+                formatter: function() {
+                    var s = "<span style='font-size:10px'>"+ Highcharts.dateFormat('%A, %b %e, %Y', this.x) +'</span>';
+                    $.each(this.points, function(i, point) {
+                    	var color = point.series.color;
+                    	var name = point.series.name;
+                    	var y;
+                    	if(name == "DAU") {
+                    		y = Highcharts.numberFormat(point.total, 0, '.', ',');
+                    	}
+                    	else {
+                    		y = Highcharts.numberFormat(point.y, 0, '.', ',');
+                    	}
+                        s += '<br/>'+ "<span style='color:" + color + "'>" + name +'</span> : <b>'+ y +'</b>';
+                    });
+                    return s;
+                }
+                
+            },
+
 			legend: {
 				enabled: true,
                 layout: 'vertical',
@@ -70,7 +92,7 @@ $(document).ready(function() {
 
 			plotOptions: {
 	            column: {
-	                grouping: false
+	                stacking: 'normal'
 	            }
         	},
 
@@ -249,7 +271,8 @@ $(document).ready(function() {
 
 		//CHART 1
 		accu_data[index] = [utc_date, parseFloat(record['accu'])];
-		dau_data[index] = [utc_date, parseFloat(record['dau'])];
+		//necessary for Henrys style of plotting. DAU must be equal to old users + new users
+		dau_data[index] = [utc_date, parseFloat(record['dau']) - parseFloat(record['users'])];
 		nu_data[index] = [utc_date, parseFloat(record['users'])];
 		pccu_data[index] = [utc_date, parseFloat(record['pccu'])];
 
@@ -287,6 +310,13 @@ $(document).ready(function() {
 	// //Function that sets up the series data for plotting
 	function fill_series() {
 		//CHART 1
+		nu_series = {
+                name: "NU",
+                type: "column",
+                data: nu_data,
+                //color: '#B2E6FF'
+        };
+        chart1_series[0] = nu_series;
         dau_series = {
                 name: "DAU",
                 type: "column",
@@ -294,14 +324,7 @@ $(document).ready(function() {
                 //color: '#0033CC'
 
         };
-        chart1_series[0] = dau_series;
-        nu_series = {
-                name: "NU",
-                type: "column",
-                data: nu_data,
-                //color: '#B2E6FF'
-        };
-        chart1_series[1] = nu_series;
+        chart1_series[1] = dau_series;
 		accu_series = {
                 name: "ACCU",
                 data: accu_data,
