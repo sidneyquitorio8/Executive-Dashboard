@@ -70,7 +70,7 @@ $(document).ready(function() {
 
 			plotOptions: {
 	            column: {
-	                stacking: 'normal'
+	                grouping: false
 	            }
         	},
 
@@ -287,6 +287,21 @@ $(document).ready(function() {
 	// //Function that sets up the series data for plotting
 	function fill_series() {
 		//CHART 1
+        dau_series = {
+                name: "DAU",
+                type: "column",
+                data: dau_data,
+                //color: '#0033CC'
+
+        };
+        chart1_series[0] = dau_series;
+        nu_series = {
+                name: "NU",
+                type: "column",
+                data: nu_data,
+                //color: '#B2E6FF'
+        };
+        chart1_series[1] = nu_series;
 		accu_series = {
                 name: "ACCU",
                 data: accu_data,
@@ -294,8 +309,9 @@ $(document).ready(function() {
                 marker : {
 					enabled : true,
 				},
+				//color: '#FF5050'
         };
-        chart1_series[0] = accu_series;
+        chart1_series[2] = accu_series;
         pccu_series = {
                 name: "PCCU",
                 data: pccu_data,
@@ -303,22 +319,9 @@ $(document).ready(function() {
                 marker : {
 					enabled : true,
 				},
+				//color: '#990000'
         };
-        chart1_series[1] = pccu_series;
-        nu_series = {
-                name: "NU",
-                type: "column",
-                data: nu_data,
-                stack: 0
-        };
-        chart1_series[2] = nu_series;
-        dau_series = {
-                name: "DAU",
-                type: "column",
-                data: dau_data,
-                stack: 0
-        };
-        chart1_series[3] = dau_series;
+        chart1_series[3] = pccu_series;
 
         //CHART 2
         payrate_series = {
