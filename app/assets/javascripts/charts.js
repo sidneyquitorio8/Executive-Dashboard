@@ -5,6 +5,10 @@ $(document).ready(function() {
 	var accu_data = [];
 	var pccu_series = [];
 	var pccu_data = [];
+	var dau_series;
+	var dau_data = [];
+	var nu_series;
+	var nu_data = [];
 
 
 	function draw_charts() {
@@ -12,8 +16,54 @@ $(document).ready(function() {
 		$('#container').highcharts('StockChart', {
 
 			rangeSelector : {
-				selected : 1
+				selected : 1,
+				buttons: [{
+					type: 'week',
+					count: 1,
+					text: '1w'
+				}, {
+					type: 'month',
+					count: 1,
+					text: '1m'
+				}, {
+					type: 'month',
+					count: 3,
+					text: '3m'
+				}, {
+					type: 'month',
+					count: 6,
+					text: '6m'
+				}, {
+					type: 'ytd',
+					text: 'YTD'
+				}, {
+					type: 'year',
+					count: 1,
+					text: '1y'
+				}, {
+					type: 'all',
+					text: 'All'
+				}]
 			},
+
+			plotOptions: {
+	            column: {
+	                stacking: 'normal'
+	            }
+        	},
+
+			yAxis: [{
+            // Primary Y-Axis
+                labels:{
+		            align:'right',
+		            x:-10
+		        },
+		        lineWidth : 1,
+		        offset : 0
+        	}, {
+            // Secondary Y-Axis
+            opposite: true
+        	}],
 			
 			series : all_series
 
@@ -28,15 +78,39 @@ $(document).ready(function() {
 		var date = new Date(record['dailyDate']);
 		var utc_date = Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
 		accu_data[index] = [utc_date, parseFloat(record['accu'])];
+		dau_data[index] = [utc_date, parseFloat(record['dau'])];
+		nu_data[index] = [utc_date, parseFloat(record['users'])];
+		pccu_data[index] = [utc_date, parseFloat(record['pccu'])];
 	}
 
 	// //Function that sets up the series data for plotting
 	function fill_series() {
 		accu_series = {
                 name: "ACCU",
-                data: accu_data
+                data: accu_data,
+                yAxis: 1,
         };
         all_series[0] = accu_series;
+        pccu_series = {
+                name: "PCCU",
+                data: pccu_data,
+                yAxis: 1
+        };
+        all_series[1] = pccu_series;
+        nu_series = {
+                name: "NU",
+                type: "column",
+                data: nu_data,
+                stack: 0
+        };
+        all_series[2] = nu_series;
+        dau_series = {
+                name: "DAU",
+                type: "column",
+                data: dau_data,
+                stack: 0
+        };
+        all_series[3] = dau_series;
 	}
 
 	//Pull data from API, format it, and store into the series arrays
