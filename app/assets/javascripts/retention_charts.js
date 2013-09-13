@@ -13,6 +13,22 @@ $(document).ready(function() {
 	function draw_charts() {
 		$('#container4').highcharts('StockChart', {
 
+			tooltip: {
+                
+                useHTML: true,
+                formatter: function() {
+                    var s = "<span style='font-size:10px'>"+ Highcharts.dateFormat('%A, %b %e, %Y', this.x) +'</span>';
+                    $.each(this.points, function(i, point) {
+                    	var color = point.series.color;
+                    	var name = point.series.name;
+                    	var y = Highcharts.numberFormat(point.y, 2, '.', ',');
+                        s += '<br/>'+ "<span style='color:" + color + "'>" + name +'</span> : <b>'+ y +'</b>';
+                    });
+                    return s;
+                }
+                
+            },
+
 			legend: {
 				enabled: true,
                 layout: 'vertical',

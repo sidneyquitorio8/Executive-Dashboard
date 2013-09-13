@@ -121,6 +121,27 @@ $(document).ready(function() {
 		//CHART 2
 		$('#container2').highcharts('StockChart', {
 
+			tooltip: {
+                
+                useHTML: true,
+                formatter: function() {
+                    var s = "<span style='font-size:10px'>"+ Highcharts.dateFormat('%A, %b %e, %Y', this.x) +'</span>';
+                    $.each(this.points, function(i, point) {
+                    	var color = point.series.color;
+                    	var name = point.series.name;
+                    	var y = Highcharts.numberFormat(point.y, 2, '.', ',');
+                    	if(name == "Pay Rate") {
+                    		s += '<br/>'+ "<span style='color:" + color + "'>" + name +'</span> : <b>'+ y +'%</b>';
+                    	}
+                    	else {
+                        	s += '<br/>'+ "<span style='color:" + color + "'>" + name +'</span> : <b>$'+ y +'</b>';
+                        }
+                    });
+                    return s;
+                }
+                
+            },
+
 			legend: {
 				enabled: true,
                 layout: 'vertical',
