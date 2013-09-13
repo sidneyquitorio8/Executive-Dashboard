@@ -12,5 +12,6 @@
 //
 //= require jquery
 //= require jquery_ujs
-//= require charts.js
+//= require data_charts.js
 //= require highstock.js
+//= require retention_charts.js

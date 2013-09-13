@@ -20,6 +20,8 @@ $(document).ready(function() {
 	var arppu_series;
 	var arppu_data = [];
 
+	//CHART 3
+	var sales_data = [];
 
 	function draw_charts() {
 
@@ -171,6 +173,73 @@ $(document).ready(function() {
 
 		});
 
+		//CHART 3
+		$('#container3').highcharts('StockChart', {
+
+			legend: {
+				enabled: true,
+                layout: 'vertical',
+                align: 'right',
+                verticalAlign: 'middle',
+                borderWidth: 0
+            },
+
+			rangeSelector : {
+				selected : 1,
+				buttons: [{
+					type: 'week',
+					count: 1,
+					text: '1w'
+				}, {
+					type: 'month',
+					count: 1,
+					text: '1m'
+				}, {
+					type: 'month',
+					count: 3,
+					text: '3m'
+				}, {
+					type: 'month',
+					count: 6,
+					text: '6m'
+				}, {
+					type: 'ytd',
+					text: 'YTD'
+				}, {
+					type: 'year',
+					count: 1,
+					text: '1y'
+				}, {
+					type: 'all',
+					text: 'All'
+				}]
+			},
+
+        	xAxis: {
+				minTickInterval: 24 * 3600 * 1000
+			},
+
+			yAxis: [{
+            // Primary Y-Axis
+                labels:{
+                	formatter: function() {
+                        return '$' + Highcharts.numberFormat(this.value, 0, '.', ',');
+                    },
+		            align:'right',
+		            x:-10
+		        },
+		        lineWidth : 1,
+		        offset : 0
+        	}],
+			
+			series : [{
+				type: "column",
+				name: "Sales",
+				data: sales_data
+			}]
+
+		});
+
 	}
 
 	//Function that takes a record and fills the series data with that record
@@ -185,12 +254,34 @@ $(document).ready(function() {
 		pccu_data[index] = [utc_date, parseFloat(record['pccu'])];
 
 		//CHART 2 (Henry wants these values self calculated)
-		var payrate = parseFloat(record['paying'])/parseFloat(record['dau'])*100;
+		var payrate;
+		if(parseFloat(record['dau']) != 0) {
+			payrate = parseFloat(record['paying'])/parseFloat(record['dau'])*100;
+		}
+		else {
+			payrate = 0;
+		}
 		payrate_data[index] = [utc_date, payrate];
-		var arpu = parseFloat(record['sales'])/parseFloat(record['dau']);
+		var arpu;
+		if(parseFloat(record['dau']) != 0) {
+			arpu = parseFloat(record['sales'])/parseFloat(record['dau']);
+		}
+		else {
+			arpu = 0;
+		}
 		arpu_data[index] = [utc_date, arpu];
-		var arppu = parseFloat(record['sales'])/parseFloat(record['paying']);
+		var arppu;
+		if(parseFloat(record['paying']) != 0) {
+			arppu = parseFloat(record['sales'])/parseFloat(record['paying']);
+		}
+		else {
+			arppu = 0;
+		}
 		arppu_data[index] = [utc_date, arppu];
+
+		//CHART 3
+		sales_data[index] = [utc_date, parseFloat(record['sales'])];
+
 	}
 
 	// //Function that sets up the series data for plotting
